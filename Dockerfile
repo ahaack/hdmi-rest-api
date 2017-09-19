@@ -32,7 +32,7 @@ ENV LD_LIBRARY_PATH=/opt/vc/lib:${LD_LIBRARY_PATH}
 RUN apk add --no-cache python3 && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
-    pip3 install --upgrade pip setuptools && \
+    pip3 install --upgrade pip setuptools gunicorn && \
     rm -r /root/.cache
 
 COPY ./app/requirements.txt /tmp/requirements.txt
@@ -43,7 +43,7 @@ RUN mkdir -p /opt/app
 COPY ./app /opt/app/
 
 WORKDIR /opt/app
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+ENTRYPOINT ["gunicorn"]
+CMD ["app:app", "-b", "0.0.0.0:4711"]
 
 EXPOSE 4711
